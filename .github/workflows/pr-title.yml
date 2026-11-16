@@ -1,0 +1,21 @@
+name: PR title
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions: {}
+
+jobs:
+  conventional-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the title follows Conventional Commits
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          pattern='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-z0-9._-]+\))?!?: [^ ]'
+          if ! printf '%s\n' "$TITLE" | grep -Eq "$pattern"; then
+            echo "::error::The title becomes the commit on main and must follow Conventional Commits, such as 'fix(tts): keep spaces between sentences'."
+            exit 1
+          fi
