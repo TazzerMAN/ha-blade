@@ -2,6 +2,25 @@
 
 Thanks for helping make Blade better in Home Assistant.
 
+Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md).
+
+## What a contribution needs
+
+- You understand every line you propose and can explain it in review.
+- You tested it: the suite passes at 100 % coverage, and a change in how Blade is called was also tried in a real Home Assistant.
+- You answer for your code, whatever tools you used to write it.
+- AI assistance is welcome under the same rules. Say in the pull request what it was used for.
+
+## Sign-off
+
+Every commit carries a [Developer Certificate of Origin](https://developercertificate.org) sign-off: by adding it, you certify that you have the right to submit the code under the project's license.
+
+```sh
+git commit -s
+```
+
+The line `Signed-off-by: Your Name <you@example.com>` must match the commit author. A check verifies it on every pull request, and commits made on GitHub's website are signed off automatically.
+
 ## Set up
 
 ```sh
@@ -23,7 +42,7 @@ uv run pytest --cov
 
 The suite must stay at 100 % line and branch coverage, with no network access: mock Blade, never call it.
 
-`main` only changes through pull requests. A pull request merges, squashed into one signed commit, once the tests, hassfest and the Marketplace catalog validation pass.
+`main` only changes through pull requests. A pull request merges, squashed into one signed commit, once the tests, hassfest, the Marketplace catalog validation, the sign-off and the title checks pass.
 
 ## Conventions
 

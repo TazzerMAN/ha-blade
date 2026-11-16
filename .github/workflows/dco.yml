@@ -1,0 +1,29 @@
+name: DCO
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions: {}
+
+jobs:
+  dco:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Check every commit is signed off by its author
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          missing=$(gh api "repos/$REPO/pulls/$PR/commits" --paginate --jq '.[]
+            | select(.author.login != "dependabot[bot]")
+            | .commit.author.email as $email
+            | select([.commit.message | splits("\n") | select(startswith("Signed-off-by: ") and endswith("<\($email)>"))] | length == 0)
+            | .sha[0:7]')
+          if [ -n "$missing" ]; then
+            echo "::error::Commits without a Signed-off-by line matching their author: $(echo $missing). Sign off with git commit -s, see CONTRIBUTING.md."
+            exit 1
+          fi
