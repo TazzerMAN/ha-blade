@@ -18,11 +18,11 @@ updates:
       - dependency-name: gazetteer-matcher
       - dependency-name: mutagen
       - dependency-name: ha-ffmpeg
-      - dependency-name: sqlalchemy
+      - dependency-name: SQLAlchemy
       - dependency-name: fnv-hash-fast
       - dependency-name: pymicro-vad
       - dependency-name: pyspeex-noise
-      - dependency-name: pyturbojpeg
+      - dependency-name: PyTurboJPEG
       - dependency-name: av
       - dependency-name: numpy
     groups:
