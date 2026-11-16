@@ -1,0 +1,16 @@
+name: Idea
+description: Suggest a feature or an improvement.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What would you like to do?
+      description: The situation at home and the result you are after.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: How could Blade help?
+      description: Optional. A model, an endpoint or a setting you have in mind.

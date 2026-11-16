@@ -1,0 +1,65 @@
+ocr:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: blade
+    camera_entity_id:
+      selector:
+        entity:
+          domain: camera
+    file_path:
+      example: /media/scans/letter.jpg
+      selector:
+        text:
+    instructions:
+      selector:
+        text:
+          multiline: true
+
+translate:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: blade
+    text:
+      required: true
+      selector:
+        text:
+          multiline: true
+    target_language:
+      required: true
+      example: French
+      selector:
+        text:
+    source_language:
+      example: English
+      selector:
+        text:
+
+forecast:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: blade
+    entity_id:
+      required: true
+      selector:
+        entity:
+          domain: sensor
+    history_hours:
+      default: 168
+      selector:
+        number:
+          min: 24
+          max: 8760
+          unit_of_measurement: h
+    horizon_hours:
+      default: 24
+      selector:
+        number:
+          min: 1
+          max: 336
+          unit_of_measurement: h

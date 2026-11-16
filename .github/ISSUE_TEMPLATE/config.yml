@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Blade account, billing or API keys
+    url: https://console.blade.sh
+    about: Questions about your Blade account belong to Blade, not to this integration.
+  - name: Home Assistant community
+    url: https://community.home-assistant.io
+    about: Help with Assist, automations or your Home Assistant setup.

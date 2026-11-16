@@ -1,0 +1,103 @@
+# serializer version: 1
+# name: test_diagnostics
+  dict({
+    'catalog': dict({
+      'chat': list([
+        'deepseek-ocr-2',
+        'gemma-4-26b-a4b',
+        'gemma-4-31b',
+        'hy-mt2-7b',
+        'text-only',
+        'voxtral-mini-3b',
+      ]),
+      'decision': list([
+        'clef-flash',
+      ]),
+      'forecast': list([
+        'timestral-28m',
+      ]),
+      'image': list([
+        'flux-2-klein',
+      ]),
+      'speech': list([
+        'kokoro-82m',
+        'kyutai-tts-1.6b-en-fr',
+      ]),
+      'transcription': list([
+        'whisper-large',
+      ]),
+    }),
+    'data': dict({
+      'api_key': '**REDACTED**',
+    }),
+    'options': dict({
+      'forecast_enabled': True,
+      'forecast_model': 'timestral-28m',
+      'monthly_budget': 0.0,
+      'ocr_enabled': True,
+      'ocr_model': 'deepseek-ocr-2',
+      'translate_enabled': True,
+      'translate_model': 'hy-mt2-7b',
+    }),
+    'subentries': dict({
+      'ai_task_data_id': dict({
+        'data': dict({
+          'image_model': 'flux-2-klein',
+          'image_size': '1024x1024',
+          'images_enabled': True,
+          'model': 'gemma-4-31b',
+        }),
+        'model_listed': True,
+        'title': 'Blade AI Task',
+        'type': 'ai_task_data',
+      }),
+      'ai_task_evaluate_id': dict({
+        'data': dict({
+          'model': 'clef-flash',
+        }),
+        'model_listed': True,
+        'title': 'Blade Evaluation',
+        'type': 'ai_task_evaluate',
+      }),
+      'conversation_id': dict({
+        'data': dict({
+          'code_interpreter': False,
+          'llm_hass_api': list([
+            'assist',
+          ]),
+          'model': 'qwen3.6-35b-a3b',
+          'prompt': '''
+            You are a voice assistant for Home Assistant.
+            Answer questions about the world truthfully.
+            Respond simply and to the point in plain text.
+  
+          ''',
+          'recommended': True,
+          'web_fetch': False,
+          'web_search': False,
+        }),
+        'model_listed': False,
+        'title': 'Blade Conversation',
+        'type': 'conversation',
+      }),
+      'stt_id': dict({
+        'data': dict({
+          'model': 'voxtral-mini-3b',
+        }),
+        'model_listed': True,
+        'title': 'Blade STT',
+        'type': 'stt',
+      }),
+      'tts_id': dict({
+        'data': dict({
+          'model': 'kyutai-tts-1.6b-en-fr',
+          'streaming': True,
+          'voice': 'unmute-prod-website/developpeuse-3.wav',
+        }),
+        'model_listed': True,
+        'title': 'Blade TTS',
+        'type': 'tts',
+      }),
+    }),
+  })
+# ---

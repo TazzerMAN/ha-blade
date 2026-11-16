@@ -1,0 +1,56 @@
+name: Bug report
+description: Something does not work as described.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time. Please never paste your API key; diagnostics already remove it.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what happened instead.
+    validations:
+      required: true
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+      placeholder: "2026.11.1"
+    validations:
+      required: true
+  - type: input
+    id: blade_version
+    attributes:
+      label: Blade integration version
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: feature
+    attributes:
+      label: Feature
+      options:
+        - Setup
+        - Conversation agent
+        - Custom functions
+        - AI task
+        - Evaluation
+        - Speech-to-text
+        - Text-to-speech
+        - Actions (OCR, translate, forecast)
+        - Spend sensors and cap
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: Settings > Devices & services > Blade > three dots > Download diagnostics. Drop the file here.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Relevant lines from Settings > System > Logs.
+      render: text

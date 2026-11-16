@@ -1,0 +1,404 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Blade",
+        "description": "1. In the [Blade console]({console_url}), open your account menu and choose **API keys**.\n2. Create a key and paste it below.\n\nBlade sets up each service with the best models on your account.",
+        "data": {
+          "api_key": "API key",
+          "create_pipeline": "Create the Blade voice assistant"
+        },
+        "data_description": {
+          "api_key": "Your Blade API key.",
+          "create_pipeline": "A voice assistant named Blade, ready to use.\nYou will find it in Settings > Voice assistants."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Blade key rejected",
+        "description": "Blade rejected the API key. Enter a new one.",
+        "data": {
+          "api_key": "API key"
+        },
+        "data_description": {
+          "api_key": "Your Blade API key."
+        }
+      },
+      "reconfigure": {
+        "title": "Change the Blade key",
+        "data": {
+          "api_key": "API key"
+        },
+        "data_description": {
+          "api_key": "Your Blade API key."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach Blade.",
+      "invalid_auth": "Blade rejected this API key.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This key is already set up.",
+      "reauth_successful": "The key was updated.",
+      "reconfigure_successful": "The key was updated."
+    }
+  },
+  "config_subentries": {
+    "conversation": {
+      "entry_type": "Conversation agent",
+      "initiate_flow": {
+        "user": "Add conversation agent",
+        "reconfigure": "Reconfigure conversation agent"
+      },
+      "abort": {
+        "entry_not_loaded": "Blade is not loaded. Fix the integration first.",
+        "reconfigure_successful": "Saved."
+      },
+      "step": {
+        "init": {
+          "data": {
+            "name": "Name",
+            "model": "Model",
+            "prompt": "Instructions",
+            "llm_hass_api": "Control Home Assistant",
+            "web_search": "Web search (billed per search)",
+            "web_fetch": "Read web pages",
+            "code_interpreter": "Run Python code",
+            "recommended": "Recommended model settings",
+            "functions": "Custom functions (YAML)"
+          },
+          "data_description": {
+            "model": "Chat models that can call tools.\nYou can also type a model id.",
+            "prompt": "How the assistant should behave. Templates are allowed.",
+            "llm_hass_api": "Lets the agent read and control the entities you exposed to Assist.",
+            "web_search": "Blade searches the web and cites its sources.\nEach search is billed to your Blade account.",
+            "web_fetch": "Blade can open a web page given in the request.",
+            "code_interpreter": "Blade can run Python in a sandbox to compute an answer.",
+            "recommended": "Turn off to set temperature, answer length and reasoning.",
+            "functions": "Tools in the Extended OpenAI Conversation format (native execute_service, script, template).\nPaste your functions as they are; exposed_entities works in the instructions."
+          }
+        },
+        "advanced": {
+          "title": "Model settings",
+          "data": {
+            "temperature": "Temperature",
+            "max_tokens": "Maximum answer length (tokens)",
+            "reasoning_effort": "Reasoning effort"
+          },
+          "data_description": {
+            "temperature": "Higher is more creative, lower is more predictable.",
+            "reasoning_effort": "For models that reason.\nMore effort, slower answers."
+          }
+        }
+      },
+      "error": {
+        "invalid_functions": "Invalid functions: {error}"
+      }
+    },
+    "ai_task_data": {
+      "entry_type": "AI task",
+      "initiate_flow": {
+        "user": "Add AI task",
+        "reconfigure": "Reconfigure AI task"
+      },
+      "abort": {
+        "entry_not_loaded": "Blade is not loaded. Fix the integration first.",
+        "reconfigure_successful": "Saved."
+      },
+      "step": {
+        "init": {
+          "data": {
+            "name": "Name",
+            "model": "Model",
+            "images_enabled": "Generate images",
+            "image_model": "Image model",
+            "image_size": "Image size"
+          },
+          "data_description": {
+            "model": "Pick a model that reads images to analyse camera snapshots and photos.",
+            "images_enabled": "Allow the ai_task.generate_image action.",
+            "image_size": "Width x height in pixels."
+          }
+        }
+      }
+    },
+    "ai_task_evaluate": {
+      "entry_type": "Evaluation",
+      "initiate_flow": {
+        "user": "Add evaluation",
+        "reconfigure": "Reconfigure evaluation"
+      },
+      "abort": {
+        "entry_not_loaded": "Blade is not loaded. Fix the integration first.",
+        "reconfigure_successful": "Saved."
+      },
+      "step": {
+        "init": {
+          "data": {
+            "name": "Name",
+            "model": "Decision model"
+          },
+          "data_description": {
+            "model": "Yes/no, choice and score questions, answered with calibrated probabilities.\nText only."
+          }
+        }
+      }
+    },
+    "stt": {
+      "entry_type": "Speech-to-text",
+      "initiate_flow": {
+        "user": "Add speech-to-text",
+        "reconfigure": "Reconfigure speech-to-text"
+      },
+      "abort": {
+        "entry_not_loaded": "Blade is not loaded. Fix the integration first.",
+        "reconfigure_successful": "Saved."
+      },
+      "step": {
+        "init": {
+          "data": {
+            "name": "Name",
+            "model": "Model",
+            "prompt": "Context prompt"
+          },
+          "data_description": {
+            "model": "Voxtral and Whisper are as accurate on average; Voxtral is steadier.\nNew transcription models on your account appear here.",
+            "prompt": "Names and rare words that help the transcription.\nWrite them in the language of the voice assistant."
+          }
+        }
+      }
+    },
+    "tts": {
+      "entry_type": "Text-to-speech",
+      "initiate_flow": {
+        "user": "Add text-to-speech",
+        "reconfigure": "Reconfigure text-to-speech"
+      },
+      "abort": {
+        "entry_not_loaded": "Blade is not loaded. Fix the integration first.",
+        "reconfigure_successful": "Saved."
+      },
+      "step": {
+        "init": {
+          "data": {
+            "name": "Name",
+            "model": "Model",
+            "voice": "Voice",
+            "streaming": "Speak while the answer is written"
+          },
+          "data_description": {
+            "model": "Kyutai speaks French and English; Kokoro speaks English.",
+            "voice": "Pick a voice of the chosen model, or type a voice id.",
+            "streaming": "Starts speaking after the first sentence.\nKyutai only."
+          }
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Blade actions",
+        "description": "Turn each Blade action on or off and choose its model.",
+        "data": {
+          "ocr_enabled": "Read text in images (blade.ocr)",
+          "ocr_model": "OCR model",
+          "translate_enabled": "Translate (blade.translate)",
+          "translate_model": "Translation model",
+          "forecast_enabled": "Forecast sensors (blade.forecast)",
+          "forecast_model": "Forecast model",
+          "monthly_budget": "Monthly spending cap (estimated)"
+        },
+        "data_description": {
+          "monthly_budget": "Blade stops once the month's estimated spend reaches this amount.\n0: no cap."
+        }
+      }
+    },
+    "abort": {
+      "entry_not_loaded": "Blade is not loaded. Fix the integration first."
+    }
+  },
+  "selector": {
+    "reasoning_effort": {
+      "options": {
+        "none": "None",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      }
+    }
+  },
+  "services": {
+    "ocr": {
+      "name": "Read text in an image",
+      "description": "Turns a camera snapshot or an image file into Markdown text.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Blade account",
+          "description": "Which Blade account to use. Defaults to the first one."
+        },
+        "camera_entity_id": {
+          "name": "Camera",
+          "description": "Take a snapshot of this camera."
+        },
+        "file_path": {
+          "name": "File",
+          "description": "Path of an image file Home Assistant may read (allowlist_external_dirs)."
+        },
+        "instructions": {
+          "name": "Instructions",
+          "description": "What to extract (by default, all the text as Markdown)."
+        }
+      }
+    },
+    "translate": {
+      "name": "Translate",
+      "description": "Translates a text with a dedicated translation model.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Blade account",
+          "description": "Which Blade account to use. Defaults to the first one."
+        },
+        "text": {
+          "name": "Text",
+          "description": "The text to translate."
+        },
+        "target_language": {
+          "name": "Target language",
+          "description": "Language to translate into, for example French."
+        },
+        "source_language": {
+          "name": "Source language",
+          "description": "Language of the text. Detected when empty."
+        }
+      }
+    },
+    "forecast": {
+      "name": "Forecast a sensor",
+      "description": "Predicts the next hours of a sensor from its long-term statistics, with a likely range.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Blade account",
+          "description": "Which Blade account to use. Defaults to the first one."
+        },
+        "entity_id": {
+          "name": "Sensor",
+          "description": "A sensor with long-term statistics (state_class set)."
+        },
+        "history_hours": {
+          "name": "History",
+          "description": "How many past hours to learn from."
+        },
+        "horizon_hours": {
+          "name": "Horizon",
+          "description": "How many hours to predict."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "invalid_auth": {
+      "message": "Blade rejected the API key."
+    },
+    "cannot_connect": {
+      "message": "Could not reach Blade: {error}"
+    },
+    "api_error": {
+      "message": "Blade error: {error}"
+    },
+    "empty_response": {
+      "message": "Blade returned an empty answer."
+    },
+    "tool_args_parse_error": {
+      "message": "The model sent unreadable tool arguments: {error}"
+    },
+    "file_not_found": {
+      "message": "File not found: {file_path}"
+    },
+    "unsupported_file_type": {
+      "message": "Only PNG, JPEG, WebP and GIF images are supported: {file_path}"
+    },
+    "path_not_allowed": {
+      "message": "Home Assistant is not allowed to read {file_path}. Add its folder to allowlist_external_dirs."
+    },
+    "model_without_vision": {
+      "message": "The model {model} cannot read images. Pick a vision model for this task."
+    },
+    "response_not_found": {
+      "message": "The model did not answer."
+    },
+    "json_parse_error": {
+      "message": "The model answer is not valid JSON."
+    },
+    "evaluate_text_only": {
+      "message": "Blade evaluations read text only; remove the attachments."
+    },
+    "invalid_answer": {
+      "message": "Blade returned an unreadable answer for {question}."
+    },
+    "entry_not_loaded": {
+      "message": "No loaded Blade account was found."
+    },
+    "action_disabled": {
+      "message": "The {action} action is turned off in the Blade options."
+    },
+    "ocr_source_missing": {
+      "message": "Give a camera or a file."
+    },
+    "not_enough_history": {
+      "message": "{entity_id} has less than 24 hours of statistics."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "cost_today": {
+        "name": "Estimated cost today"
+      },
+      "cost_month": {
+        "name": "Estimated cost this month"
+      },
+      "tokens_month": {
+        "name": "Tokens this month"
+      },
+      "account_status": {
+        "name": "Account status",
+        "state": {
+          "ok": "OK",
+          "insufficient_balance": "Balance used up",
+          "paid_credit_required": "Paid credit required",
+          "invoice_unpaid": "Invoice unpaid",
+          "monthly_budget_exceeded": "Blade spending cap reached",
+          "payment_error": "Payment problem",
+          "local_budget_reached": "Home Assistant cap reached"
+        }
+      }
+    }
+  },
+  "issues": {
+    "insufficient_balance": {
+      "title": "Blade balance used up",
+      "description": "Blade refused a request: the account balance is used up.\n\nTop up the wallet in the [Blade console]({console_url}). Calls resume by themselves."
+    },
+    "paid_credit_required": {
+      "title": "Blade needs paid credit",
+      "description": "The free credit does not cover this model.\n\nAdd paid credit in the [Blade console]({console_url})."
+    },
+    "invoice_unpaid": {
+      "title": "Blade invoice unpaid",
+      "description": "Blade refused a request: an invoice is unpaid.\n\nSettle it in the [Blade console]({console_url})."
+    },
+    "monthly_budget_exceeded": {
+      "title": "Blade spending cap reached",
+      "description": "The spending cap set in the [Blade console]({console_url}) is reached.\n\nRaise it there, or wait for next month."
+    },
+    "payment_error": {
+      "title": "Blade payment problem",
+      "description": "Blade refused a request for a billing reason.\n\nCheck the [Blade console]({console_url})."
+    },
+    "local_budget_reached": {
+      "title": "Blade monthly cap reached",
+      "description": "This month's estimated spend reached your {budget} € cap: Blade calls are paused.\n\nRaise the cap in the integration options, or wait for next month."
+    }
+  }
+}

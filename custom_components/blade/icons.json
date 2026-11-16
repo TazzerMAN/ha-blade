@@ -1,0 +1,18 @@
+{
+  "entity": {
+    "sensor": {
+      "cost_today": { "default": "mdi:cash-clock" },
+      "cost_month": { "default": "mdi:cash-multiple" },
+      "tokens_month": { "default": "mdi:counter" },
+      "account_status": {
+        "default": "mdi:account-alert",
+        "state": { "ok": "mdi:account-check" }
+      }
+    }
+  },
+  "services": {
+    "ocr": { "service": "mdi:text-recognition" },
+    "translate": { "service": "mdi:translate" },
+    "forecast": { "service": "mdi:chart-bell-curve-cumulative" }
+  }
+}

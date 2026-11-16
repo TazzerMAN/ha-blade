@@ -1,0 +1,33 @@
+homeassistant:
+  name: Home
+  language: en
+  country: FR
+  time_zone: Europe/Paris
+  unit_system: metric
+  currency: EUR
+frontend:
+config:
+conversation:
+assist_pipeline:
+history:
+logbook:
+media_source:
+person:
+sun:
+system_health:
+input_boolean:
+  lamp_relay:
+    name: Relay
+template:
+  - light:
+      - name: Living room lamp
+        unique_id: demo_lamp
+        state: "{{ is_state('input_boolean.lamp_relay', 'on') }}"
+        turn_on:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.lamp_relay
+        turn_off:
+          - action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.lamp_relay

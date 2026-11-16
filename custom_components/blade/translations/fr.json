@@ -1,0 +1,404 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connexion à Blade",
+        "description": "1. Dans la [console Blade]({console_url}), ouvrez le menu de votre compte et choisissez **Clés API**.\n2. Créez une clé et collez-la ci-dessous.\n\nBlade prépare chaque service avec les meilleurs modèles de votre compte.",
+        "data": {
+          "api_key": "Clé API",
+          "create_pipeline": "Créer l'assistant vocal Blade"
+        },
+        "data_description": {
+          "api_key": "Votre clé API Blade.",
+          "create_pipeline": "Un assistant vocal nommé Blade, prêt à l'emploi.\nVous le trouverez dans Paramètres > Assistants vocaux."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Clé Blade refusée",
+        "description": "Blade a refusé la clé API. Saisissez-en une nouvelle.",
+        "data": {
+          "api_key": "Clé API"
+        },
+        "data_description": {
+          "api_key": "Votre clé API Blade."
+        }
+      },
+      "reconfigure": {
+        "title": "Changer la clé Blade",
+        "data": {
+          "api_key": "Clé API"
+        },
+        "data_description": {
+          "api_key": "Votre clé API Blade."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de joindre Blade.",
+      "invalid_auth": "Blade a refusé cette clé API.",
+      "unknown": "Erreur inattendue."
+    },
+    "abort": {
+      "already_configured": "Cette clé est déjà configurée.",
+      "reauth_successful": "La clé a été mise à jour.",
+      "reconfigure_successful": "La clé a été mise à jour."
+    }
+  },
+  "config_subentries": {
+    "conversation": {
+      "entry_type": "Agent de conversation",
+      "initiate_flow": {
+        "user": "Ajouter un agent de conversation",
+        "reconfigure": "Reconfigurer l'agent de conversation"
+      },
+      "abort": {
+        "entry_not_loaded": "Blade n'est pas chargé. Réparez d'abord l'intégration.",
+        "reconfigure_successful": "Enregistré."
+      },
+      "step": {
+        "init": {
+          "data": {
+            "name": "Nom",
+            "model": "Modèle",
+            "prompt": "Instructions",
+            "llm_hass_api": "Piloter Home Assistant",
+            "web_search": "Recherche web (facturée à chaque recherche)",
+            "web_fetch": "Lecture de pages web",
+            "code_interpreter": "Exécuter du code Python",
+            "recommended": "Réglages recommandés du modèle",
+            "functions": "Fonctions personnalisées (YAML)"
+          },
+          "data_description": {
+            "model": "Les modèles de conversation capables d'appeler des outils.\nVous pouvez aussi saisir un identifiant de modèle.",
+            "prompt": "Le rôle et le ton de l'assistant.\nLes templates Home Assistant sont acceptés.",
+            "llm_hass_api": "Permet à l'agent de lire et de piloter les entités exposées à Assist.",
+            "web_search": "Blade cherche sur le web et cite ses sources.\nChaque recherche est facturée sur votre compte Blade.",
+            "web_fetch": "Blade peut ouvrir une page web citée dans la demande.",
+            "code_interpreter": "Blade peut exécuter du Python dans un bac à sable pour calculer une réponse.",
+            "recommended": "Décochez pour régler la température, la longueur des réponses et le raisonnement.",
+            "functions": "Des outils au format d'Extended OpenAI Conversation (native execute_service, script, template).\nCollez vos fonctions telles quelles ; exposed_entities fonctionne dans les instructions."
+          }
+        },
+        "advanced": {
+          "title": "Réglages du modèle",
+          "data": {
+            "temperature": "Température",
+            "max_tokens": "Longueur maximale de la réponse (jetons)",
+            "reasoning_effort": "Effort de raisonnement"
+          },
+          "data_description": {
+            "temperature": "Élevée : plus inventif.\nBasse : plus prévisible.",
+            "reasoning_effort": "Pour les modèles qui raisonnent.\nPlus d'effort, réponse plus lente."
+          }
+        }
+      },
+      "error": {
+        "invalid_functions": "Fonctions invalides : {error}"
+      }
+    },
+    "ai_task_data": {
+      "entry_type": "Tâche IA",
+      "initiate_flow": {
+        "user": "Ajouter une tâche IA",
+        "reconfigure": "Reconfigurer la tâche IA"
+      },
+      "abort": {
+        "entry_not_loaded": "Blade n'est pas chargé. Réparez d'abord l'intégration.",
+        "reconfigure_successful": "Enregistré."
+      },
+      "step": {
+        "init": {
+          "data": {
+            "name": "Nom",
+            "model": "Modèle",
+            "images_enabled": "Générer des images",
+            "image_model": "Modèle d'image",
+            "image_size": "Taille des images"
+          },
+          "data_description": {
+            "model": "Pour analyser des captures de caméra ou des photos, choisissez un modèle capable de lire les images.",
+            "images_enabled": "Autorise l'action ai_task.generate_image.",
+            "image_size": "Largeur x hauteur en pixels."
+          }
+        }
+      }
+    },
+    "ai_task_evaluate": {
+      "entry_type": "Évaluation",
+      "initiate_flow": {
+        "user": "Ajouter une évaluation",
+        "reconfigure": "Reconfigurer l'évaluation"
+      },
+      "abort": {
+        "entry_not_loaded": "Blade n'est pas chargé. Réparez d'abord l'intégration.",
+        "reconfigure_successful": "Enregistré."
+      },
+      "step": {
+        "init": {
+          "data": {
+            "name": "Nom",
+            "model": "Modèle de décision"
+          },
+          "data_description": {
+            "model": "Questions par oui ou non, à choix ou à note, avec des probabilités calibrées.\nTexte uniquement."
+          }
+        }
+      }
+    },
+    "stt": {
+      "entry_type": "Reconnaissance vocale",
+      "initiate_flow": {
+        "user": "Ajouter une reconnaissance vocale",
+        "reconfigure": "Reconfigurer la reconnaissance vocale"
+      },
+      "abort": {
+        "entry_not_loaded": "Blade n'est pas chargé. Réparez d'abord l'intégration.",
+        "reconfigure_successful": "Enregistré."
+      },
+      "step": {
+        "init": {
+          "data": {
+            "name": "Nom",
+            "model": "Modèle",
+            "prompt": "Contexte"
+          },
+          "data_description": {
+            "model": "Voxtral et Whisper se valent en moyenne ; Voxtral est plus régulier.\nLes nouveaux modèles de transcription de votre compte apparaissent ici.",
+            "prompt": "Des noms propres et des mots rares, pour aider la transcription.\nÉcrivez-les dans la langue de l'assistant vocal."
+          }
+        }
+      }
+    },
+    "tts": {
+      "entry_type": "Synthèse vocale",
+      "initiate_flow": {
+        "user": "Ajouter une synthèse vocale",
+        "reconfigure": "Reconfigurer la synthèse vocale"
+      },
+      "abort": {
+        "entry_not_loaded": "Blade n'est pas chargé. Réparez d'abord l'intégration.",
+        "reconfigure_successful": "Enregistré."
+      },
+      "step": {
+        "init": {
+          "data": {
+            "name": "Nom",
+            "model": "Modèle",
+            "voice": "Voix",
+            "streaming": "Parler pendant que la réponse s'écrit"
+          },
+          "data_description": {
+            "model": "Kyutai parle français et anglais ; Kokoro parle anglais.",
+            "voice": "Choisissez une voix du modèle, ou saisissez un identifiant de voix.",
+            "streaming": "La voix démarre dès la première phrase.\nKyutai uniquement."
+          }
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Actions Blade",
+        "description": "Activez ou désactivez chaque action Blade et choisissez son modèle.",
+        "data": {
+          "ocr_enabled": "Lire le texte des images (blade.ocr)",
+          "ocr_model": "Modèle d'OCR",
+          "translate_enabled": "Traduire (blade.translate)",
+          "translate_model": "Modèle de traduction",
+          "forecast_enabled": "Prévoir des capteurs (blade.forecast)",
+          "forecast_model": "Modèle de prévision",
+          "monthly_budget": "Plafond de dépense mensuel (estimé)"
+        },
+        "data_description": {
+          "monthly_budget": "Blade s'arrête quand la dépense estimée du mois atteint ce montant.\n0 : aucun plafond."
+        }
+      }
+    },
+    "abort": {
+      "entry_not_loaded": "Blade n'est pas chargé. Réparez d'abord l'intégration."
+    }
+  },
+  "selector": {
+    "reasoning_effort": {
+      "options": {
+        "none": "Aucun",
+        "low": "Faible",
+        "medium": "Moyen",
+        "high": "Élevé"
+      }
+    }
+  },
+  "services": {
+    "ocr": {
+      "name": "Lire le texte d'une image",
+      "description": "Transforme une capture de caméra ou un fichier image en texte Markdown.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Compte Blade",
+          "description": "Le compte Blade à utiliser. Par défaut, le premier."
+        },
+        "camera_entity_id": {
+          "name": "Caméra",
+          "description": "La caméra dont l'image est lue."
+        },
+        "file_path": {
+          "name": "Fichier",
+          "description": "Chemin d'une image que Home Assistant a le droit de lire (allowlist_external_dirs)."
+        },
+        "instructions": {
+          "name": "Instructions",
+          "description": "Ce qu'il faut extraire (par défaut, tout le texte en Markdown)."
+        }
+      }
+    },
+    "translate": {
+      "name": "Traduire",
+      "description": "Traduit un texte avec un modèle de traduction dédié.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Compte Blade",
+          "description": "Le compte Blade à utiliser. Par défaut, le premier."
+        },
+        "text": {
+          "name": "Texte",
+          "description": "Le texte à traduire."
+        },
+        "target_language": {
+          "name": "Langue cible",
+          "description": "La langue dans laquelle traduire, par exemple « anglais »."
+        },
+        "source_language": {
+          "name": "Langue source",
+          "description": "La langue du texte d'origine, détectée automatiquement si vide."
+        }
+      }
+    },
+    "forecast": {
+      "name": "Prévoir un capteur",
+      "description": "Prévoit les prochaines heures d'un capteur d'après ses statistiques long terme, avec une fourchette probable.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Compte Blade",
+          "description": "Le compte Blade à utiliser. Par défaut, le premier."
+        },
+        "entity_id": {
+          "name": "Capteur",
+          "description": "Un capteur avec statistiques long terme (state_class défini)."
+        },
+        "history_hours": {
+          "name": "Historique",
+          "description": "Nombre d'heures d'historique à prendre en compte."
+        },
+        "horizon_hours": {
+          "name": "Horizon",
+          "description": "Nombre d'heures à prévoir."
+        }
+      }
+    }
+  },
+  "exceptions": {
+    "invalid_auth": {
+      "message": "Blade a refusé la clé API."
+    },
+    "cannot_connect": {
+      "message": "Impossible de joindre Blade : {error}"
+    },
+    "api_error": {
+      "message": "Erreur Blade : {error}"
+    },
+    "empty_response": {
+      "message": "Blade a renvoyé une réponse vide."
+    },
+    "tool_args_parse_error": {
+      "message": "Le modèle a envoyé des arguments d'outil illisibles : {error}"
+    },
+    "file_not_found": {
+      "message": "Fichier introuvable : {file_path}"
+    },
+    "unsupported_file_type": {
+      "message": "Seules les images PNG, JPEG, WebP et GIF sont acceptées : {file_path}"
+    },
+    "path_not_allowed": {
+      "message": "Home Assistant n'a pas le droit de lire {file_path}. Ajoutez son dossier à allowlist_external_dirs."
+    },
+    "model_without_vision": {
+      "message": "Le modèle {model} ne lit pas les images. Choisissez un modèle de vision pour cette tâche."
+    },
+    "response_not_found": {
+      "message": "Le modèle n'a pas répondu."
+    },
+    "json_parse_error": {
+      "message": "La réponse du modèle n'est pas un JSON valide."
+    },
+    "evaluate_text_only": {
+      "message": "Les évaluations Blade ne lisent que du texte : retirez les pièces jointes."
+    },
+    "invalid_answer": {
+      "message": "Blade a renvoyé une réponse illisible pour {question}."
+    },
+    "entry_not_loaded": {
+      "message": "Aucun compte Blade chargé n'a été trouvé."
+    },
+    "action_disabled": {
+      "message": "L'action {action} est désactivée dans les options Blade."
+    },
+    "ocr_source_missing": {
+      "message": "Indiquez une caméra ou un fichier."
+    },
+    "not_enough_history": {
+      "message": "{entity_id} a moins de 24 heures de statistiques."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "cost_today": {
+        "name": "Coût estimé aujourd'hui"
+      },
+      "cost_month": {
+        "name": "Coût estimé ce mois-ci"
+      },
+      "tokens_month": {
+        "name": "Jetons ce mois-ci"
+      },
+      "account_status": {
+        "name": "État du compte",
+        "state": {
+          "ok": "OK",
+          "insufficient_balance": "Solde épuisé",
+          "paid_credit_required": "Crédit payant requis",
+          "invoice_unpaid": "Facture impayée",
+          "monthly_budget_exceeded": "Plafond Blade atteint",
+          "payment_error": "Problème de paiement",
+          "local_budget_reached": "Plafond Home Assistant atteint"
+        }
+      }
+    }
+  },
+  "issues": {
+    "insufficient_balance": {
+      "title": "Solde Blade épuisé",
+      "description": "Blade a refusé une requête : le solde du compte est épuisé.\n\nRechargez le portefeuille dans la [console Blade]({console_url}). Les appels reprendront d'eux-mêmes."
+    },
+    "paid_credit_required": {
+      "title": "Crédit payant Blade requis",
+      "description": "Le crédit offert ne couvre pas ce modèle.\n\nAjoutez du crédit payant dans la [console Blade]({console_url})."
+    },
+    "invoice_unpaid": {
+      "title": "Facture Blade impayée",
+      "description": "Blade a refusé une requête : une facture est impayée.\n\nRéglez-la dans la [console Blade]({console_url})."
+    },
+    "monthly_budget_exceeded": {
+      "title": "Plafond de dépense Blade atteint",
+      "description": "Le plafond de dépense réglé dans la [console Blade]({console_url}) est atteint.\n\nRelevez-le là-bas, ou attendez le mois prochain."
+    },
+    "payment_error": {
+      "title": "Problème de paiement Blade",
+      "description": "Blade a refusé une requête pour une raison de facturation.\n\nVérifiez la [console Blade]({console_url})."
+    },
+    "local_budget_reached": {
+      "title": "Plafond mensuel Blade atteint",
+      "description": "La dépense estimée du mois a atteint votre plafond de {budget} € : les appels à Blade sont en pause.\n\nRelevez le plafond dans les options de l'intégration, ou attendez le mois prochain."
+    }
+  }
+}

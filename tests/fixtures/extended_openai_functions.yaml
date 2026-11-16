@@ -1,0 +1,154 @@
+- spec:
+    name: execute_services
+    description: Use this function to execute service of devices in Home Assistant.
+    parameters:
+      type: object
+      properties:
+        list:
+          type: array
+          items:
+            type: object
+            properties:
+              domain:
+                type: string
+                description: The domain of the service
+              service:
+                type: string
+                description: The service to be called
+              service_data:
+                type: object
+                description: The service data object to indicate what to control.
+                properties:
+                  entity_id:
+                    type: string
+                    description: The entity_id retrieved from available devices. It
+                      must start with domain, followed by dot character.
+                required:
+                - entity_id
+            required:
+            - domain
+            - service
+            - service_data
+  function:
+    type: native
+    name: execute_service
+- spec:
+    name: add_items_to_list
+    description: Ajoute un ou plusieurs articles à une liste (liste de courses ou tâches). À utiliser pour toute demande d'ajout à une liste.
+    parameters:
+      type: object
+      properties:
+        list:
+          type: string
+          enum:
+          - todo.liste_dachats
+          - todo.taches
+          description: todo.liste_dachats pour les courses, todo.taches pour les tâches
+        items:
+          type: array
+          items:
+            type: string
+          description: Les articles à ajouter, un par élément, avec une majuscule initiale
+      required:
+      - list
+      - items
+  function:
+    type: script
+    sequence:
+    - repeat:
+        for_each: "{{ items }}"
+        sequence:
+        - action: todo.add_item
+          target:
+            entity_id: "{{ list }}"
+          data:
+            item: "{{ repeat.item }}"
+- spec:
+    name: get_list_items
+    description: Lit le contenu d'une liste (liste de courses ou tâches). À utiliser quand on demande ce qu'il y a sur une liste.
+    parameters:
+      type: object
+      properties:
+        list:
+          type: string
+          enum:
+          - todo.liste_dachats
+          - todo.taches
+      required:
+      - list
+  function:
+    type: script
+    sequence:
+    - action: todo.get_items
+      target:
+        entity_id: "{{ list }}"
+      data:
+        status: needs_action
+      response_variable: _function_result
+- spec:
+    name: search_entities
+    description: Cherche, en lecture seule, parmi TOUTES les entités de la maison (y compris non exposées) celles dont l'identifiant ou le nom contient un mot-clé. Renvoie au plus 20 lignes « entity_id ; nom ; état ». À utiliser quand l'information demandée n'est pas dans la liste des appareils.
+    parameters:
+      type: object
+      properties:
+        query:
+          type: string
+          description: Un mot-clé simple, en minuscules, par exemple « soleil », « sun », « batterie », « météo », « temperature »
+      required:
+      - query
+  function:
+    type: template
+    value_template: >-
+      {%- set q = query | lower -%}
+      {%- set ns = namespace(n=0) -%}
+      {%- for s in states if (q in s.entity_id or q in (s.name | lower)) and s.state not in ['unavailable', 'unknown'] -%}
+      {%- if ns.n < 20 -%}{{ s.entity_id }} ; {{ s.name }} ; {{ s.state }}{{ '\n' }}{%- set ns.n = ns.n + 1 -%}{%- endif -%}
+      {%- endfor -%}
+      {%- if ns.n == 0 -%}Aucune entité trouvée pour « {{ query }} ».{%- endif -%}
+- spec:
+    name: get_entity_details
+    description: Lit, en lecture seule, l'état et tous les attributs d'une entité de la maison (par exemple sun.sun pour les heures de lever et de coucher, weather.* pour les prévisions).
+    parameters:
+      type: object
+      properties:
+        entity_id:
+          type: string
+          description: L'identifiant exact, par exemple sun.sun
+      required:
+      - entity_id
+  function:
+    type: template
+    value_template: >-
+      {%- set s = states[entity_id.split('.')[0]][entity_id.split('.', 1)[1]] if '.' in entity_id else none -%}
+      {%- if s is none -%}Entité {{ entity_id }} introuvable.{%- else -%}
+      état : {{ s.state }} ; attributs : {{ s.attributes | tojson }}
+      {%- endif -%}
+- spec:
+    name: get_weather_forecast
+    description: Prévisions météo pour la maison (par défaut) ou pour la maison de campagne. Lecture seule. type daily pour les prochains jours, hourly pour les prochaines heures.
+    parameters:
+      type: object
+      properties:
+        lieu:
+          type: string
+          enum:
+          - weather.maison
+          - weather.campagne
+          description: weather.maison pour la maison, weather.campagne pour la maison de campagne
+        type:
+          type: string
+          enum:
+          - daily
+          - hourly
+      required:
+      - lieu
+      - type
+  function:
+    type: script
+    sequence:
+    - action: weather.get_forecasts
+      target:
+        entity_id: "{{ lieu }}"
+      data:
+        type: "{{ type }}"
+      response_variable: _function_result
