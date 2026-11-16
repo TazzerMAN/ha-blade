@@ -31,7 +31,7 @@ The suite must stay at 100 % line and branch coverage, with no network access: m
 - Every user-facing string lives in `strings.json` and both translations. English and French are kept in step.
 - Comments explain why, never what the code already says.
 - Workflows pin every action to a commit and keep read-only permissions; `uvx zizmor .github/workflows` must report nothing.
-- Commit messages follow [Conventional Commits](https://www.conventionalcommits.org): `feat:`, `fix:`, `docs:`, `test:`, `chore:`.
+- Pull request titles follow [Conventional Commits](https://www.conventionalcommits.org), such as `fix(tts): keep spaces between sentences`. The title becomes the commit on `main`, and a check enforces it.
 
 ## Releases
 

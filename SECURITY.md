@@ -1,8 +1,17 @@
 # Security
 
-Please do not open a public issue for a security problem. Use **Report a vulnerability** in the Security tab of this repository to reach the maintainer privately.
+## Reporting a vulnerability
 
-What helps: the version, what an attacker could do, and steps to reproduce. You will get an answer within a week.
+Do not open a public issue for a security problem. Report it privately through [GitHub's private vulnerability reporting](https://github.com/TazzerMAN/ha-blade/security/advisories/new).
+
+Include the affected version, what an attacker could do, and the steps to reproduce.
+
+## Disclosure
+
+- You get an answer within 7 days.
+- Once the vulnerability is confirmed, a fixed release and a security advisory follow within 90 days, sooner when the fix is simple.
+- The advisory credits you, unless you ask otherwise.
+- Please keep the vulnerability private until the advisory is published.
 
 ## Supported versions
 
