@@ -9,3 +9,5 @@
 - [ ] User-facing text added in `strings.json` and in both `translations/en.json` and `translations/fr.json`
 - [ ] README and `docs/` updated if behaviour changed
 - [ ] `CHANGELOG.md` updated
+- [ ] Every commit is signed off (`git commit -s`)
+- [ ] AI assistance was used (say for what above)
