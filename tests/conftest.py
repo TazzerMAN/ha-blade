@@ -55,6 +55,7 @@ CATALOG: dict[str, BladeModel] = {
             publisher="google",
         ),
         BladeModel("text-only", "chat", supported_parameters=frozenset({"tools"})),
+        BladeModel("ovisocr3-0.8b", "chat", input_modalities=("text", "image")),
         BladeModel("deepseek-ocr-2", "chat", input_modalities=("text", "image")),
         BladeModel("hy-mt2-7b", "chat", publisher="tencent"),
         BladeModel("voxtral-mini-3b", "chat", input_modalities=("text", "audio")),

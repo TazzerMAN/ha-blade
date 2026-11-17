@@ -307,6 +307,9 @@
     "api_error": {
       "message": "Blade error: {error}"
     },
+    "model_starting": {
+      "message": "The model {model} is not answering yet: it is probably starting on Blade's side. Try again in a minute."
+    },
     "empty_response": {
       "message": "Blade returned an empty answer."
     },
@@ -330,6 +333,9 @@
     },
     "json_parse_error": {
       "message": "The model answer is not valid JSON."
+    },
+    "structure_mismatch": {
+      "message": "The model answer does not match the requested structure: {error}"
     },
     "evaluate_text_only": {
       "message": "Blade evaluations read text only; remove the attachments."

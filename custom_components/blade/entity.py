@@ -19,7 +19,7 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.json import json_dumps
 from homeassistant.util import slugify
 
-from .api import BladeError, BladeModel, StreamDelta, current_service
+from .api import BladeApiError, BladeError, BladeModel, StreamDelta, current_service
 from .const import (
     CONF_CODE_INTERPRETER,
     CONF_MAX_TOKENS,
@@ -44,6 +44,21 @@ if TYPE_CHECKING:
 # Keywords some serving stacks reject inside function parameter schemas.
 _UNSUPPORTED_TOOL_KEYS = frozenset({"oneOf", "anyOf", "allOf"})
 _IMAGE_MIME_TYPES = ("image/png", "image/jpeg", "image/webp", "image/gif")
+
+
+def blade_error(err: BladeError, model: str) -> HomeAssistantError:
+    """Build the Home Assistant error shown for a failed Blade call."""
+    if isinstance(err, BladeApiError) and err.cold_start:
+        return HomeAssistantError(
+            translation_domain=DOMAIN,
+            translation_key="model_starting",
+            translation_placeholders={"model": model},
+        )
+    return HomeAssistantError(
+        translation_domain=DOMAIN,
+        translation_key="api_error",
+        translation_placeholders={"error": str(err)},
+    )
 
 
 def format_tool(
@@ -329,10 +344,6 @@ class BladeEntity(Entity):
                     ]
                 )
             except BladeError as err:
-                raise HomeAssistantError(
-                    translation_domain=DOMAIN,
-                    translation_key="api_error",
-                    translation_placeholders={"error": str(err)},
-                ) from err
+                raise blade_error(err, self.model_id) from err
             if not chat_log.unresponded_tool_results:
                 break

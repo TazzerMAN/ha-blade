@@ -19,7 +19,7 @@ from homeassistant.core import (
     SupportsResponse,
     callback,
 )
-from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
+from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import config_validation as cv
 from homeassistant.util import dt as dt_util
 
@@ -34,6 +34,7 @@ from .const import (
     DEFAULT_ENTRY_OPTIONS,
     DOMAIN,
 )
+from .entity import blade_error
 
 if TYPE_CHECKING:
     from . import BladeConfigEntry
@@ -119,11 +120,7 @@ async def _chat_text(entry: BladeConfigEntry, body: dict[str, Any]) -> str:
     try:
         result = await entry.runtime_data.client.chat(body)
     except BladeError as err:
-        raise HomeAssistantError(
-            translation_domain=DOMAIN,
-            translation_key="api_error",
-            translation_placeholders={"error": str(err)},
-        ) from err
+        raise blade_error(err, str(body["model"])) from err
     return str(result["choices"][0]["message"].get("content") or "").strip()
 
 
@@ -249,11 +246,7 @@ async def async_forecast(call: ServiceCall) -> ServiceResponse:
             _option(entry, CONF_FORECAST_MODEL), [series], horizon, QUANTILES
         )
     except BladeError as err:
-        raise HomeAssistantError(
-            translation_domain=DOMAIN,
-            translation_key="api_error",
-            translation_placeholders={"error": str(err)},
-        ) from err
+        raise blade_error(err, _option(entry, CONF_FORECAST_MODEL)) from err
 
     quantiles = result[0]["quantiles"]
     low, median, high = (quantiles[str(level)][0] for level in QUANTILES)

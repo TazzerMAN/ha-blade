@@ -196,11 +196,56 @@ async def test_generate_invalid_json(
     mock_client: MagicMock,
     reply: str,
 ) -> None:
-    """A reply that is not JSON raises a readable error."""
-    script_chat(mock_client, text_round(reply))
+    """A reply that stays non-JSON after one correction raises a readable error."""
+    bodies = script_chat(mock_client, text_round(reply), text_round(reply))
     with pytest.raises(HomeAssistantError) as err:
         await generate(hass, STRUCTURE)
     assert err.value.translation_key == "json_parse_error"
+    assert len(bodies) == 2
+    assert "not valid JSON" in bodies[1]["messages"][-1]["content"]
+
+
+async def test_generate_structure_mismatch(
+    hass: HomeAssistant, init_integration: MockConfigEntry, mock_client: MagicMock
+) -> None:
+    """JSON that keeps missing the structure names the problem."""
+    reply = '{"temp": 21}'
+    bodies = script_chat(mock_client, text_round(reply), text_round(reply))
+    with pytest.raises(HomeAssistantError) as err:
+        await generate(hass, STRUCTURE)
+    assert err.value.translation_key == "structure_mismatch"
+    assert "temperature" in err.value.translation_placeholders["error"]
+    correction = bodies[1]["messages"][-1]
+    assert correction["role"] == "user"
+    assert "temperature" in correction["content"]
+
+
+async def test_generate_structure_drops_extra_fields(
+    hass: HomeAssistant, init_integration: MockConfigEntry, mock_client: MagicMock
+) -> None:
+    """Fields outside the structure are dropped, without a correction."""
+    bodies = script_chat(mock_client, text_round('{"temperature": 21, "unit": "C"}'))
+    result = await generate(hass, STRUCTURE)
+    assert result.data == {"temperature": 21}
+    assert len(bodies) == 1
+
+
+async def test_generate_structure_corrected(
+    hass: HomeAssistant, init_integration: MockConfigEntry, mock_client: MagicMock
+) -> None:
+    """One correction is enough when the model fixes its answer."""
+    bodies = script_chat(
+        mock_client,
+        text_round('{"temperature": "warm"}'),
+        text_round('{"temperature": 21}'),
+    )
+    result = await generate(hass, STRUCTURE)
+    assert result.data == {"temperature": 21}
+    assert len(bodies) == 2
+    assert bodies[1]["messages"][-2] == {
+        "role": "assistant",
+        "content": '{"temperature": "warm"}',
+    }
 
 
 async def test_generate_without_text(
@@ -519,6 +564,27 @@ async def test_evaluate_api_error(
             state="x",
             questions={"delivered": QUESTIONS["delivered"]},
         )
+
+
+@pytest.mark.parametrize("status", [503, 504])
+async def test_evaluate_model_starting(
+    hass: HomeAssistant,
+    init_integration: MockConfigEntry,
+    mock_client: MagicMock,
+    status: int,
+) -> None:
+    """A model still booting on Blade's side says so, with its name."""
+    mock_client.decide.side_effect = BladeApiError(status, None, "cold start")
+    with pytest.raises(HomeAssistantError) as err:
+        await ai_task.async_evaluate(
+            hass,
+            task_name="d",
+            entity_id=EVAL,
+            state="x",
+            questions={"delivered": QUESTIONS["delivered"]},
+        )
+    assert err.value.translation_key == "model_starting"
+    assert err.value.translation_placeholders == {"model": "clef-flash"}
 
 
 @pytest.mark.parametrize(
