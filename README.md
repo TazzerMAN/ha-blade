@@ -78,7 +78,7 @@ Your real bill is always in the [Blade console](https://console.blade.sh).
 
 Requires Home Assistant 2026.11 or later.
 
-1. In the Home Assistant **Marketplace**, search for **Blade** and install it. Until Blade is listed in the catalog, add this repository as a custom repository of type integration (this needs the Marketplace connected to GitHub).
+1. In the Home Assistant **Marketplace**, search for **Blade** and install it.
 2. Restart Home Assistant.
 3. Go to **Settings > Devices & services > Add integration > Blade** and paste an API key from the [Blade console](https://console.blade.sh) (account menu > **API keys**). The key needs **Run inference** and **Read model status**. Also tick **Read usage**: the same key will keep working when the integration shows the account balance.
 

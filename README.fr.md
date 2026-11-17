@@ -78,7 +78,7 @@ Le montant réellement facturé se trouve dans la [console Blade](https://consol
 
 Home Assistant 2026.11 ou plus récent est nécessaire.
 
-1. Dans le **Marketplace** de Home Assistant, cherchez **Blade** et installez-le. Tant que Blade n'apparaît pas dans le catalogue, ajoutez ce dépôt comme dépôt personnalisé, de type intégration (il faut pour cela connecter le Marketplace à GitHub).
+1. Dans le **Marketplace** de Home Assistant, cherchez **Blade** et installez-le.
 2. Redémarrez Home Assistant.
 3. Dans **Paramètres > Appareils et services > Ajouter une intégration**, choisissez **Blade** et collez une clé API créée dans la [console Blade](https://console.blade.sh) (menu du compte, puis **Clés API**). La clé doit avoir les droits **Exécuter l'inférence** et **Lire l'état des modèles**. Cochez aussi **Lire l'usage** : la même clé servira quand l'intégration affichera le solde du compte.
 
