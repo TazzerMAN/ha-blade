@@ -5,6 +5,7 @@
 - AI tasks check structured answers against the requested structure. When the model misses it, Blade gets one correction naming the problem; if the second answer still does not fit, the error says what is wrong.
 - A model that is still starting on Blade's side now gives a clear message ("try again in a minute") instead of a raw API error.
 - The recommended OCR model is now `ovisocr3-0.8b`, followed by `deepseek-ocr-2` and `lightonocr-3-4b`. Existing setups keep the model they use.
+- `qwen-image-2.1` leaves the recommended image models: it takes about two and a half minutes to answer when it has been idle. `flux-2-klein` and `sdxl-lightning` stay.
 
 ## 1.0.0
 

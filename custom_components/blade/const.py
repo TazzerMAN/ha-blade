@@ -176,7 +176,8 @@ RECOMMENDED_MODELS: Final[dict[str, tuple[str, ...]]] = {
     "conversation": ("qwen3.6-35b-a3b", "gemma-4-26b-a4b", "hypernova-60b"),
     # Best French writing among vision models.
     "ai_task": ("gemma-4-31b", "qwen3.8-27b", "qwen3-vl-30b-a3b"),
-    "image": ("flux-2-klein", "qwen-image-2.1", "sdxl-lightning"),
+    # qwen-image-2.1 draws better but sleeps: ~150 s on a first call.
+    "image": ("flux-2-klein", "sdxl-lightning"),
     "evaluate": ("clef-flash",),
     # Gladia first once enabled; Voxtral as fast as Whisper on average, steadier.
     "stt": ("gladia*", "solaria*", "voxtral-mini-3b", "whisper-large-v3-turbo"),
