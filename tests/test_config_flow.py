@@ -246,7 +246,7 @@ async def test_options_flow(
     assert result["type"] is FlowResultType.FORM
     assert result["step_id"] == "init"
     schema = {str(key): key for key in result["data_schema"].schema}
-    assert schema[CONF_OCR_MODEL].description["suggested_value"] == "deepseek-ocr-2"
+    assert schema[CONF_OCR_MODEL].description["suggested_value"] == "ovisocr3-0.8b"
 
     options = {
         CONF_OCR_ENABLED: False,

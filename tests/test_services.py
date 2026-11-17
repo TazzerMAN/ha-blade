@@ -59,7 +59,7 @@ async def test_ocr_file(
     assert result == {"text": "# Dear Sir"}
 
     (body,) = mock_client.chat.await_args.args
-    assert body["model"] == "deepseek-ocr-2"
+    assert body["model"] == "ovisocr3-0.8b"
     text_part, image_part = body["messages"][0]["content"]
     assert text_part["text"].startswith("Convert this document to Markdown")
     encoded = base64.b64encode(b"jpeg-bytes").decode()

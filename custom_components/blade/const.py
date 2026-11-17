@@ -60,7 +60,7 @@ RECOMMENDED_IMAGE_SIZE: Final = "1024x1024"
 RECOMMENDED_DECISION_MODEL: Final = "clef-flash"
 RECOMMENDED_STT_MODEL: Final = "voxtral-mini-3b"
 RECOMMENDED_TTS_MODEL: Final = "kyutai-tts-1.6b-en-fr"
-RECOMMENDED_OCR_MODEL: Final = "deepseek-ocr-2"
+RECOMMENDED_OCR_MODEL: Final = "ovisocr3-0.8b"
 RECOMMENDED_TRANSLATE_MODEL: Final = "hy-mt2-7b"
 RECOMMENDED_FORECAST_MODEL: Final = "timestral-28m"
 RECOMMENDED_TEMPERATURE: Final = 0.7
@@ -181,7 +181,8 @@ RECOMMENDED_MODELS: Final[dict[str, tuple[str, ...]]] = {
     # Gladia first once enabled; Voxtral as fast as Whisper on average, steadier.
     "stt": ("gladia*", "solaria*", "voxtral-mini-3b", "whisper-large-v3-turbo"),
     "tts": ("kyutai-tts-1.6b-en-fr", "kokoro-82m"),
-    "ocr": ("deepseek-ocr-2", "lightonocr-3-4b", "qwen3-vl-30b-a3b"),
+    # Follows free instructions; paddleocr-vl only reads well on its own "OCR:".
+    "ocr": ("ovisocr3-0.8b", "deepseek-ocr-2", "lightonocr-3-4b"),
     "translate": ("hy-mt2-7b", "hy-mt2-30b-a3b", "hy-mt2-1.8b"),
     "forecast": ("timestral-28m", "timestral-123m", "timestral-5m"),
 }

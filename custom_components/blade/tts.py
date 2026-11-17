@@ -10,19 +10,17 @@ from typing import TYPE_CHECKING, Any, override
 
 from homeassistant.components import tts
 from homeassistant.core import callback
-from homeassistant.exceptions import HomeAssistantError
 
 from .api import BladeError, current_service
 from .const import (
     CONF_STREAMING,
     CONF_VOICE,
-    DOMAIN,
     SPEECH_LANGUAGES,
     SPEECH_VOICES,
     STREAMING_SPEECH_MODELS,
     SUBENTRY_TTS,
 )
-from .entity import BladeEntity
+from .entity import BladeEntity, blade_error
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -104,11 +102,7 @@ class BladeTTSEntity(tts.TextToSpeechEntity, BladeEntity):
                 message, self.model_id, options[tts.ATTR_VOICE]
             )
         except BladeError as err:
-            raise HomeAssistantError(
-                translation_domain=DOMAIN,
-                translation_key="api_error",
-                translation_placeholders={"error": str(err)},
-            ) from err
+            raise blade_error(err, self.model_id) from err
         return "wav", audio
 
 
@@ -128,11 +122,7 @@ class BladeStreamingTTSEntity(BladeTTSEntity):
                 options[tts.ATTR_VOICE],
             )
         except BladeError as err:
-            raise HomeAssistantError(
-                translation_domain=DOMAIN,
-                translation_key="api_error",
-                translation_placeholders={"error": str(err)},
-            ) from err
+            raise blade_error(err, self.model_id) from err
 
         async def wav_stream() -> AsyncGenerator[bytes]:
             # A zero-length header tells players the size is unknown.
@@ -142,11 +132,7 @@ class BladeStreamingTTSEntity(BladeTTSEntity):
                 async for chunk in stream.chunks:
                     yield chunk
             except BladeError as err:
-                raise HomeAssistantError(
-                    translation_domain=DOMAIN,
-                    translation_key="api_error",
-                    translation_placeholders={"error": str(err)},
-                ) from err
+                raise blade_error(err, self.model_id) from err
 
         return tts.TTSAudioResponse("wav", wav_stream())
 

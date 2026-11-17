@@ -307,6 +307,9 @@
     "api_error": {
       "message": "Erreur Blade : {error}"
     },
+    "model_starting": {
+      "message": "Le modèle {model} ne répond pas encore : il démarre sans doute chez Blade. Réessayez dans une minute."
+    },
     "empty_response": {
       "message": "Blade a renvoyé une réponse vide."
     },
@@ -330,6 +333,9 @@
     },
     "json_parse_error": {
       "message": "La réponse du modèle n'est pas un JSON valide."
+    },
+    "structure_mismatch": {
+      "message": "La réponse du modèle ne respecte pas la structure demandée : {error}"
     },
     "evaluate_text_only": {
       "message": "Les évaluations Blade ne lisent que du texte : retirez les pièces jointes."

@@ -22,6 +22,8 @@ HTTP_OK = 200
 HTTP_BAD_REQUEST = 400
 HTTP_UNAUTHORIZED = 401
 HTTP_PAYMENT_REQUIRED = 402
+# 503: no replica yet; 504: a boot (or, rarely, a generation) outlasted the gateway.
+COLD_START_STATUSES = frozenset({503, 504})
 
 
 class BladeError(Exception):
@@ -44,6 +46,11 @@ class BladeApiError(BladeError):
         super().__init__(f"{status} {code or 'error'}: {message}")
         self.status = status
         self.code = code
+
+    @property
+    def cold_start(self) -> bool:
+        """Return whether the model was most likely still starting."""
+        return self.status in COLD_START_STATUSES
 
 
 @dataclass(slots=True, frozen=True)

@@ -6,6 +6,7 @@ import re
 from json import JSONDecodeError
 from typing import TYPE_CHECKING, Any, override
 
+import probatio
 from homeassistant.components import ai_task, conversation
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.util.json import json_loads
@@ -21,7 +22,7 @@ from .const import (
     SUBENTRY_AI_TASK,
     SUBENTRY_EVALUATE,
 )
-from .entity import BladeEntity
+from .entity import BladeEntity, blade_error
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigSubentry
@@ -31,6 +32,7 @@ if TYPE_CHECKING:
     from . import BladeConfigEntry
 
 PARALLEL_UPDATES = 0
+MAX_STRUCTURE_CORRECTIONS = 1
 _FENCE = re.compile(r"```(?:json)?\s*(.*?)\s*```", re.DOTALL)
 
 
@@ -69,26 +71,37 @@ class BladeAITaskEntity(ai_task.AITaskEntity, BladeEntity):
         self, task: ai_task.GenDataTask, chat_log: conversation.ChatLog
     ) -> ai_task.GenDataTaskResult:
         """Answer the task, as text or as JSON matching its structure."""
-        await self._async_handle_chat_log(chat_log, task.name, task.structure)
-        last = chat_log.content[-1]
-        if not isinstance(last, conversation.AssistantContent):
-            raise HomeAssistantError(
-                translation_domain=DOMAIN, translation_key="response_not_found"
-            )
-        text = last.content or ""
-        if not task.structure:
+        corrections = 0
+        while True:
+            await self._async_handle_chat_log(chat_log, task.name, task.structure)
+            last = chat_log.content[-1]
+            if not isinstance(last, conversation.AssistantContent):
+                raise HomeAssistantError(
+                    translation_domain=DOMAIN, translation_key="response_not_found"
+                )
+            text = last.content or ""
+            if not task.structure:
+                return ai_task.GenDataTaskResult(
+                    conversation_id=chat_log.conversation_id, data=text
+                )
+            try:
+                data = _parse_structured(text, task.structure)
+            except _StructureError as err:
+                if corrections == MAX_STRUCTURE_CORRECTIONS:
+                    raise
+                corrections += 1
+                # Models often ignore format hints written in the schema;
+                # telling them the exact problem once usually fixes it.
+                chat_log.async_add_user_content(
+                    conversation.UserContent(
+                        content="Your answer does not match the requested "
+                        f"structure: {err.problem}. Answer again with the JSON only."
+                    )
+                )
+                continue
             return ai_task.GenDataTaskResult(
-                conversation_id=chat_log.conversation_id, data=text
+                conversation_id=chat_log.conversation_id, data=data
             )
-        try:
-            data = json_loads(_strip_fences(text))
-        except JSONDecodeError as err:
-            raise HomeAssistantError(
-                translation_domain=DOMAIN, translation_key="json_parse_error"
-            ) from err
-        return ai_task.GenDataTaskResult(
-            conversation_id=chat_log.conversation_id, data=data
-        )
 
     @override
     async def _async_generate_image(
@@ -104,11 +117,7 @@ class BladeAITaskEntity(ai_task.AITaskEntity, BladeEntity):
                 task.instructions, model, size
             )
         except BladeError as err:
-            raise HomeAssistantError(
-                translation_domain=DOMAIN,
-                translation_key="api_error",
-                translation_placeholders={"error": str(err)},
-            ) from err
+            raise blade_error(err, model) from err
         width, _, height = size.partition("x")
         chat_log.async_add_assistant_content_without_tools(
             conversation.AssistantContent(agent_id=self.entity_id, content="")
@@ -147,11 +156,7 @@ class BladeEvaluationEntity(ai_task.AITaskEntity, BladeEntity):
                 self.model_id, task.state if task.state is not None else "", questions
             )
         except BladeError as err:
-            raise HomeAssistantError(
-                translation_domain=DOMAIN,
-                translation_key="api_error",
-                translation_placeholders={"error": str(err)},
-            ) from err
+            raise blade_error(err, self.model_id) from err
         return ai_task.EvaluationTaskResult(
             answers={
                 question_id: _convert_answer(question_id, answers.get(question_id))
@@ -191,6 +196,42 @@ def _convert_answer(question_id: str, answer: Any) -> ai_task.EvaluationAnswer:
         translation_key="invalid_answer",
         translation_placeholders={"question": question_id},
     )
+
+
+class _StructureError(HomeAssistantError):
+    """A structured answer that cannot be used, and what is wrong with it."""
+
+    def __init__(
+        self,
+        problem: str,
+        translation_key: str,
+        translation_placeholders: dict[str, str] | None = None,
+    ) -> None:
+        """Keep the problem in plain words for the model."""
+        super().__init__(
+            translation_domain=DOMAIN,
+            translation_key=translation_key,
+            translation_placeholders=translation_placeholders,
+        )
+        self.problem = problem
+
+
+def _parse_structured(text: str, structure: probatio.Schema) -> Any:
+    """Read a JSON answer and check it against the task structure.
+
+    Fields nobody asked for are dropped rather than refused.
+    """
+    try:
+        return structure.extend({}, extra=probatio.REMOVE_EXTRA)(
+            json_loads(_strip_fences(text))
+        )
+    except JSONDecodeError as err:
+        raise _StructureError("it is not valid JSON", "json_parse_error") from err
+    except probatio.MultipleInvalid as err:
+        problem = "; ".join(str(sub) for sub in err.errors)
+        raise _StructureError(
+            problem, "structure_mismatch", {"error": problem}
+        ) from err
 
 
 def _strip_fences(text: str) -> str:
